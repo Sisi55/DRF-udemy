@@ -19,6 +19,14 @@ class UserManager(BaseUserManager):
 #     원래 create_user > _create_user 실행되는데,
 #     username 안쓰려고 여기서 한꺼번에 구현했다
 
+    def create_superuser(self, email, password):
+        user = self.create_user(email, password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+
+        return user
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
