@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin
 )
@@ -16,8 +17,9 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
 
         return user
-#     원래 create_user > _create_user 실행되는데,
-#     username 안쓰려고 여기서 한꺼번에 구현했다
+
+    #     원래 create_user > _create_user 실행되는데,
+    #     username 안쓰려고 여기서 한꺼번에 구현했다
 
     def create_superuser(self, email, password):
         user = self.create_user(email, password)
@@ -37,3 +39,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return self.name
